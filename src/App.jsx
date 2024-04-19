@@ -1,3 +1,4 @@
+import GameBoard from './components/GameBoard'
 import Player from './components/Player'
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
                             symbol={'O'}
                         />
                     </ol>
-                    GAME BOARD
+                    <GameBoard />
                 </div>
             </main>
         </>
