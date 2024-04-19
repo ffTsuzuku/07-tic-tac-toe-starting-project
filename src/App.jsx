@@ -1,10 +1,26 @@
+import Player from './components/Player'
 
 function App() {
-  
-
-  return (
-    <h1>React Tic-Tac-Toe</h1>
-  )
+    return (
+        <>
+            <a href='#main-content'>Skip To Main</a>
+            <main id='main-content'>
+                <div id='game-container'>
+                    <ol id='players'>
+                        <Player
+                            default_name={'Player 1'}
+                            symbol={'X'}
+                        />
+                        <Player
+                            default_name={'Player 2'}
+                            symbol={'O'}
+                        />
+                    </ol>
+                    GAME BOARD
+                </div>
+            </main>
+        </>
+    )
 }
 
 export default App
