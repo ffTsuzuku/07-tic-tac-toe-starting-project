@@ -1,26 +1,9 @@
 import { useState } from 'react'
 
-const initial_board_state = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-]
-
-const GameBoard = ({ turns, on_player_move }) => {
-    const game_board = initial_board_state
-
-    console.log({ turns })
-    for (const turn of turns) {
-        const {
-            cell: { row, column },
-            player,
-        } = turn
-        game_board[row][column] = player
-    }
-
+const GameBoard = ({ board, on_player_move }) => {
     return (
         <ol id={'game-board'}>
-            {game_board.map((row, row_index) => {
+            {board.map((row, row_index) => {
                 return (
                     <li key={row_index}>
                         <ol>
@@ -34,6 +17,7 @@ const GameBoard = ({ turns, on_player_move }) => {
                                                     col_index
                                                 )
                                             }
+                                            disabled={symbol !== null}
                                         >
                                             {symbol}
                                         </button>
