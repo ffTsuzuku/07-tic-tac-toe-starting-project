@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 const GameBoard = ({ board, on_player_move }) => {
+    console.log('GameBoard Refreshed')
     return (
         <ol id={'game-board'}>
             {board.map((row, row_index) => {

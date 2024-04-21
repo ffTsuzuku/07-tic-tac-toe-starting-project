@@ -19,11 +19,18 @@ const derive_active_player = (game_turns) => {
 }
 
 function App() {
+    console.log('App Refreshed')
     const [game_turns, set_game_turns] = useState([])
+    const [players, set_players] = useState({
+        X: 'Player 1',
+        O: 'Player 2',
+    })
 
     const active_player = derive_active_player(game_turns)
 
-    const game_board = initial_board_state
+    const game_board = [...initial_board_state].map((array) => [
+        ...array,
+    ])
     for (const turn of game_turns) {
         const {
             cell: { row, column },
@@ -42,6 +49,18 @@ function App() {
             ]
             return copy
         })
+    }
+
+    const reset_game = () => set_game_turns([])
+
+    const handle_player_name_change = (
+        player_symbol,
+        player_name
+    ) => {
+        set_players((players) => ({
+            ...players,
+            [player_symbol]: player_name,
+        }))
     }
 
     let game_over = false
@@ -70,15 +89,20 @@ function App() {
                             is_active={active_player === 'X'}
                             default_name={'Player 1'}
                             symbol={'X'}
+                            on_name_change={handle_player_name_change}
                         />
                         <Player
                             is_active={active_player === 'O'}
                             default_name={'Player 2'}
                             symbol={'O'}
+                            on_name_change={handle_player_name_change}
                         />
                     </ol>
                     {(game_over || draw) && (
-                        <GameOver winner={winner} />
+                        <GameOver
+                            winner={players[winner]}
+                            onReset={reset_game}
+                        />
                     )}
                     <GameBoard
                         on_player_move={execute_player_move}
