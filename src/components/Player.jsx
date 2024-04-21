@@ -12,7 +12,9 @@ const Player = ({
 
     const handle_edit_click = () => {
         setIsEditing((curr_state) => !curr_state)
-        on_name_change(symbol, choosen_name)
+        if (isEditing) {
+            on_name_change(symbol, choosen_name)
+        }
     }
 
     let name_jsx = <span className='player-name'>{choosen_name}</span>

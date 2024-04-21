@@ -4,7 +4,12 @@ import Player from './components/Player'
 import { WINNING_COMBINATIONS } from './winning_combinations'
 import GameOver from './components/GameOver'
 
-const initial_board_state = [
+const PLAYERS = {
+    X: 'Player 1',
+    O: 'Player 2',
+}
+
+const INITIAL_BOARD_STATE = [
     [null, null, null],
     [null, null, null],
     [null, null, null],
@@ -18,17 +23,25 @@ const derive_active_player = (game_turns) => {
     return player
 }
 
-function App() {
-    console.log('App Refreshed')
-    const [game_turns, set_game_turns] = useState([])
-    const [players, set_players] = useState({
-        X: 'Player 1',
-        O: 'Player 2',
-    })
+const derive_winner = (game_board) => {
+    let winner = null
+    for (const combination of WINNING_COMBINATIONS) {
+        const [cell_one, cell_two, cell_three] = combination
+        const val_1 = game_board[cell_one.row][cell_one.column]
+        const val_2 = game_board[cell_two.row][cell_two.column]
+        const val_3 = game_board[cell_three.row][cell_three.column]
 
-    const active_player = derive_active_player(game_turns)
+        if (val_1 != null && val_1 === val_2 && val_1 === val_3) {
+            winner = val_1 === 'X' ? 'X' : 'O'
+            break
+        }
+    }
 
-    const game_board = [...initial_board_state].map((array) => [
+    return winner
+}
+
+const derive_game_board = (game_turns) => {
+    const game_board = [...INITIAL_BOARD_STATE].map((array) => [
         ...array,
     ])
     for (const turn of game_turns) {
@@ -38,6 +51,16 @@ function App() {
         } = turn
         game_board[row][column] = player
     }
+}
+
+function App() {
+    console.log('App Refreshed')
+    const [game_turns, set_game_turns] = useState([])
+    const [players, set_players] = useState(PLAYERS)
+
+    const active_player = derive_active_player(game_turns)
+
+    const game_board = derive_game_board(game_turns)
 
     const execute_player_move = (row, column) => {
         set_game_turns((prev_turns) => {
@@ -63,20 +86,7 @@ function App() {
         }))
     }
 
-    let game_over = false
-    let winner = null
-    for (const combination of WINNING_COMBINATIONS) {
-        const [cell_one, cell_two, cell_three] = combination
-        const val_1 = game_board[cell_one.row][cell_one.column]
-        const val_2 = game_board[cell_two.row][cell_two.column]
-        const val_3 = game_board[cell_three.row][cell_three.column]
-
-        if (val_1 != null && val_1 === val_2 && val_1 === val_3) {
-            game_over = true
-            winner = val_1 === 'X' ? 'X' : 'O'
-            break
-        }
-    }
+    let winner_symbol = derive_winner()
     let draw = game_turns.length === 9 && !winner
 
     return (
@@ -87,20 +97,20 @@ function App() {
                     <ol id='players'>
                         <Player
                             is_active={active_player === 'X'}
-                            default_name={'Player 1'}
+                            default_name={PLAYERS.X}
                             symbol={'X'}
                             on_name_change={handle_player_name_change}
                         />
                         <Player
                             is_active={active_player === 'O'}
-                            default_name={'Player 2'}
+                            default_name={PLAYERS.O}
                             symbol={'O'}
                             on_name_change={handle_player_name_change}
                         />
                     </ol>
-                    {(game_over || draw) && (
+                    {(winner || draw) && (
                         <GameOver
-                            winner={players[winner]}
+                            winner={players[winner_symbol]}
                             onReset={reset_game}
                         />
                     )}
