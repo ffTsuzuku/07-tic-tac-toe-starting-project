@@ -51,16 +51,13 @@ const derive_game_board = (game_turns) => {
         } = turn
         game_board[row][column] = player
     }
+    return game_board
 }
 
 function App() {
     console.log('App Refreshed')
     const [game_turns, set_game_turns] = useState([])
     const [players, set_players] = useState(PLAYERS)
-
-    const active_player = derive_active_player(game_turns)
-
-    const game_board = derive_game_board(game_turns)
 
     const execute_player_move = (row, column) => {
         set_game_turns((prev_turns) => {
@@ -86,8 +83,10 @@ function App() {
         }))
     }
 
-    let winner_symbol = derive_winner()
-    let draw = game_turns.length === 9 && !winner
+    const active_player = derive_active_player(game_turns)
+    const game_board = derive_game_board(game_turns)
+    let winner_symbol = derive_winner(game_board)
+    let draw = game_turns.length === 9 && !winner_symbol
 
     return (
         <>
@@ -108,7 +107,7 @@ function App() {
                             on_name_change={handle_player_name_change}
                         />
                     </ol>
-                    {(winner || draw) && (
+                    {(winner_symbol || draw) && (
                         <GameOver
                             winner={players[winner_symbol]}
                             onReset={reset_game}
